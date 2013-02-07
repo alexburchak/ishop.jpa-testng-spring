@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<datasources>
+    <local-tx-datasource>
+        <jndi-name>ishopDS</jndi-name>
+        <connection-url>jdbc:oracle:thin:@127.0.0.1:1521:db</connection-url>
+        <driver-class>oracle.jdbc.OracleDriver</driver-class>
+        <user-name>user</user-name>
+        <password>password</password>
+        <min-pool-size>10</min-pool-size>
+        <max-pool-size>50</max-pool-size>
+    </local-tx-datasource> 
+</datasources>

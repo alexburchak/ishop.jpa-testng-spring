@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd"
+       default-autowire="byName">
+
+    <context:component-scan base-package="org.ishop"/>
+
+    <context:annotation-config/>
+
+    <bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect"
+          factory-method="aspectOf"/>
+
+    <bean id="entityManagerFactory"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject"
+                  ref="entityManagerBean"/>
+        <property name="targetMethod"
+                  value="getEntityManagerFactory"/>
+    </bean>
+
+    <bean id="jtaTransactionManager"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="org.apache.openejb.OpenEJB.getTransactionManager"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager"
+                  ref="jtaTransactionManager"/>
+    </bean>
+
+    <jee:jndi-lookup id="entityManagerBean"
+                     proxy-interface="org.ishop.support.EntityManagerFactoryLocator"
+                     jndi-name="entityManagerFactoryLocatorLocal"/>
+
+    <jee:jndi-lookup id="productWebService"
+                     proxy-interface="org.ishop.ws.ProductWebService"
+                     jndi-name="productWebServiceRemote"/>
+
+    <alias alias="ishopPU"
+           name="entityManagerFactory"/>
+</beans>
